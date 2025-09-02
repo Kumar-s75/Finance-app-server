@@ -6,10 +6,10 @@ services:
     ports:
       - "8080:8080"
     env_file:
-      - .env
+      - .env.local
     depends_on:
       - mongo
-    restart: unless-stopped   # restart if it crashes, but not on manual stop
+    restart: unless-stopped
 
   mongo:
     image: mongo:6

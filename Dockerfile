@@ -1,19 +1,23 @@
-# Use Node.js base image
+# Use official Node.js LTS Alpine image
 FROM node:18-alpine
 
 # Set working directory
 WORKDIR /app
 
-# Copy package files and install deps
+# Copy package.json and package-lock.json
 COPY package*.json ./
+
+# Install dependencies (production only)
 RUN npm install --omit=dev --legacy-peer-deps
 
-
-# Copy the rest of the code
+# Copy application source code
 COPY . .
 
-# Expose port
+# Expose port (for local, Render ignores this)
 EXPOSE 8080
 
-# Start app
+# Set NODE_ENV to production
+ENV NODE_ENV=production
+
+# Start the app
 CMD ["npm", "start"]
