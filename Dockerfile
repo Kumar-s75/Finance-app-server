@@ -6,7 +6,8 @@ WORKDIR /app
 
 # Copy package files and install deps
 COPY package*.json ./
-RUN npm install --production
+RUN npm install --omit=dev --legacy-peer-deps
+
 
 # Copy the rest of the code
 COPY . .
