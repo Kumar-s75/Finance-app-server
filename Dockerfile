@@ -1,23 +1,25 @@
-# Use official Node.js LTS Alpine image
+# Use Node.js base image
 FROM node:18-alpine
 
 # Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copy package files and install deps
 COPY package*.json ./
-
-# Install dependencies (production only)
 RUN npm install --omit=dev --legacy-peer-deps
 
-# Copy application source code
+# Copy the rest of the code
 COPY . .
 
-# Expose port (for local, Render ignores this)
-EXPOSE 8080
-
-# Set NODE_ENV to production
+# Set NODE_ENV for production builds
 ENV NODE_ENV=production
 
-# Start the app
+# Expose port
+EXPOSE 8080
+
+# Add healthcheck (Render can detect if service is down)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+  CMD curl --fail http://localhost:8080/ || exit 1
+
+# Start app
 CMD ["npm", "start"]
